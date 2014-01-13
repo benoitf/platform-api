@@ -26,6 +26,7 @@ import com.codenvy.api.core.rest.shared.dto.Link;
 import com.codenvy.api.core.rest.shared.dto.LinkParameter;
 import com.codenvy.api.core.rest.shared.dto.RequestBodyDescriptor;
 import com.codenvy.api.core.rest.shared.dto.ServiceDescriptor;
+import com.codenvy.api.core.util.ClassUtil;
 import com.codenvy.dto.server.DtoFactory;
 
 import javax.ws.rs.Consumes;
@@ -113,13 +114,13 @@ public abstract class Service {
 
     private static Link generateLinkForMethod(UriInfo uriInfo, String linkRel, Method method, Object... pathParameters) {
         String httpMethod = null;
-        if (getAnnotation(method, GET.class) != null) {
+        if (ClassUtil.getMethodAnnotation(method, GET.class) != null) {
             httpMethod = "GET";
-        } else if (getAnnotation(method, POST.class) != null) {
+        } else if (ClassUtil.getMethodAnnotation(method, POST.class) != null) {
             httpMethod = "POST";
-        } else if (getAnnotation(method, PUT.class) != null) {
+        } else if (ClassUtil.getMethodAnnotation(method, PUT.class) != null) {
             httpMethod = "PUT";
-        } else if (getAnnotation(method, DELETE.class) != null) {
+        } else if (ClassUtil.getMethodAnnotation(method, DELETE.class) != null) {
             httpMethod = "DELETE";
         }
 
@@ -128,8 +129,8 @@ public abstract class Service {
                     String.format("Method '%s' has not any HTTP method annotation and may not be used to produce link.", method.getName()));
         }
 
-        final Consumes consumes = getAnnotation(method, Consumes.class);
-        final Produces produces = getAnnotation(method, Produces.class);
+        final Consumes consumes = ClassUtil.getMethodAnnotation(method, Consumes.class);
+        final Produces produces = ClassUtil.getMethodAnnotation(method, Produces.class);
 
         final UriBuilder baseUriBuilder = uriInfo.getBaseUriBuilder();
         final LinkedList<String> matchedURIs = new LinkedList<>(uriInfo.getMatchedURIs());
@@ -189,7 +190,7 @@ public abstract class Service {
                         LinkParameter parameter = DtoFactory.getInstance().createDto(LinkParameter.class)
                                                             .withName(queryParam.value())
                                                             .withRequired(required != null)
-                                                            .withType(getParameterType(parameterClasses[i]));
+                                                            .withType(ClassUtil.getParameterType(parameterClasses[i]));
                         if (defaultValue != null) {
                             parameter.setDefaultValue(defaultValue.value());
                         }
@@ -210,43 +211,6 @@ public abstract class Service {
             }
         }
         return link;
-    }
-
-    private static <T extends Annotation> T getAnnotation(Method method, Class<T> annotationClass) {
-        T annotation = method.getAnnotation(annotationClass);
-        if (annotation == null) {
-            for (Class<?> c = method.getDeclaringClass().getSuperclass();
-                 annotation == null && c != null && c != Object.class;
-                 c = c.getSuperclass()) {
-                Method inherited = null;
-                try {
-                    inherited = c.getMethod(method.getName(), method.getParameterTypes());
-                } catch (NoSuchMethodException ignored) {
-                }
-                if (inherited != null) {
-                    annotation = inherited.getAnnotation(annotationClass);
-                }
-            }
-        }
-        return annotation;
-    }
-
-    private static ParameterType getParameterType(Class<?> clazz) {
-        if (clazz == String.class) {
-            return ParameterType.String;
-        }
-        // restriction for collections which allowed for QueryParam annotation
-        if (clazz == List.class || clazz == Set.class || clazz == SortedSet.class) {
-            return ParameterType.Array;
-        }
-        if (clazz == Boolean.class || clazz == boolean.class) {
-            return ParameterType.Boolean;
-        }
-        if (clazz == short.class || clazz == int.class || clazz == long.class || clazz == float.class || clazz == double.class ||
-            clazz == Short.class || clazz == Integer.class || clazz == Long.class || clazz == Float.class || clazz == Double.class) {
-            return ParameterType.Number;
-        }
-        return ParameterType.Object;
     }
 
     private static class ServiceContextImpl implements ServiceContext {
