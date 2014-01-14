@@ -23,7 +23,6 @@ import com.codenvy.api.core.rest.annotations.CLI;
 import com.codenvy.api.core.rest.annotations.Description;
 import com.codenvy.api.core.rest.annotations.Option;
 import com.codenvy.api.core.rest.annotations.Required;
-import com.codenvy.api.core.util.ClassUtil;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -37,6 +36,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 /**
+ * Test CLI annotated classes with CLIValidator
+ *
  * @author Eugene Voevodin
  */
 public class CLIValidatorTest {
@@ -68,7 +69,7 @@ public class CLIValidatorTest {
     }
 
     @Test
-    public void testServiceInheritance() {
+    public void testServicesInheritance() {
         try {
             CLIValidator.validate(AbstractHelpService.class);
             Assert.fail();
@@ -98,8 +99,6 @@ public class CLIValidatorTest {
         public String method(@Required @Description("Sub command argument") @QueryParam("value") @Argument(1) String value) {
             return value;
         }
-
-
     }
 
 
@@ -176,5 +175,4 @@ public class CLIValidatorTest {
             return "Help information";
         }
     }
-
 }

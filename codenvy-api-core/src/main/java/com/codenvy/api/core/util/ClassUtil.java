@@ -17,13 +17,14 @@
  */
 package com.codenvy.api.core.util;
 
-import com.codenvy.api.core.ApiException;
 import com.codenvy.api.core.rest.shared.ParameterType;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -94,10 +95,35 @@ public final class ClassUtil {
         return annotation;
     }
 
-    public static List<Field> getFields(Class<?> clazz, AnnotationsFilter filter) throws ApiException {
-        Field[] allFields = clazz.getFields();
-        List<Field> filteredFields = new LinkedList<>();
-        for (Field field : allFields) {
+    public static List<Method> getMethods(Class<?> clazz, AnnotationsFilter filter) {
+        List<Method> methods = new ArrayList<>();
+        for (Method method : clazz.getMethods()) {
+            Set<Annotation> allMethodAnnotations = getAllMethodAnnotations(method);
+            if (filter.accept(allMethodAnnotations.toArray(new Annotation[allMethodAnnotations.size()]))) {
+                methods.add(method);
+            }
+        }
+        return methods;
+    }
+
+    public static Set<Annotation> getAllMethodAnnotations(Method method) {
+        Set<Annotation> annotations = new HashSet<>();
+        for (Class<?> c = method.getDeclaringClass();
+             c != null && c != Object.class;
+             c = c.getSuperclass()) {
+            Method inherited = null;
+            try {
+                inherited = c.getMethod(method.getName(), method.getParameterTypes());
+            } catch (NoSuchMethodException ignored) {
+            }
+            annotations.addAll(Arrays.asList(inherited.getAnnotations()));
+        }
+        return annotations;
+    }
+
+    public static List<Field> getFields(Class<?> clazz, AnnotationsFilter filter) {
+        List<Field> filteredFields = new ArrayList<>();
+        for (Field field : clazz.getFields()) {
             if (filter.accept(field.getAnnotations())) {
                 filteredFields.add(field);
             }
@@ -106,6 +132,6 @@ public final class ClassUtil {
     }
 
     public static interface AnnotationsFilter {
-        boolean accept(Annotation[] annotations) throws ApiException;
+        boolean accept(Annotation[] annotations);
     }
 }

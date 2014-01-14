@@ -72,6 +72,9 @@ public final class CLIValidator {
     }
 
     public static void validate(Class<? extends Service> clazz) throws ApiException {
+        if (clazz == null) {
+            throw new IllegalArgumentException("Given class should not be a null");
+        }
         /*CLASS*/
         checkClassAnnotatedWith(clazz, CLI.class);
         checkClassAnnotatedWith(clazz, Path.class);

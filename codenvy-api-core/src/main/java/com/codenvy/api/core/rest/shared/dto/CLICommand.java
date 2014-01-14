@@ -61,15 +61,15 @@ public interface CLICommand {
 
     CLICommand withMethod(String method);
 
-    String getProduces();
+    List<String> getProduces();
 
-    void setProduces(String media);
+    void setProduces(List<String> media);
 
-    CLICommand withProduces(String media);
+    CLICommand withProduces(List<String> media);
 
-    String getConsumes();
+    List<String> getConsumes();
 
-    void setConsumes(String media);
+    void setConsumes(List<String> media);
 
-    CLICommand withConsumes(String media);
+    CLICommand withConsumes(List<String> media);
 }

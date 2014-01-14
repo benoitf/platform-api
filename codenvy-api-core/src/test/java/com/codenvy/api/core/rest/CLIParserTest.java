@@ -2,7 +2,7 @@
  * CODENVY CONFIDENTIAL
  * __________________
  * 
- *  [2012] - [2013] Codenvy, S.A. 
+ *  [2012] - [2014] Codenvy, S.A. 
  *  All Rights Reserved.
  * 
  * NOTICE:  All information contained herein is, and remains
@@ -15,26 +15,11 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Codenvy S.A..
  */
-package com.codenvy.api.core.rest.shared.dto;
-
-import com.codenvy.dto.shared.DTO;
-
+package com.codenvy.api.core.rest;
 
 /**
- * Describes CLI argument.
- *
  * @author Eugene Voevodin
- * @see com.codenvy.api.core.rest.annotations.Description
- * @see com.codenvy.api.core.rest.annotations.Required
- * @see com.codenvy.api.core.rest.annotations.Valid
- * @see com.codenvy.api.core.rest.shared.JAXRSParameterType
  */
-@DTO
-public interface CLIArgument extends CLIParameter {
-
-    int getPosition();
-
-    void setPosition(int position);
-
-    CLIArgument withPosition(int position);
+public class CLIParserTest {
+    //TODO
 }

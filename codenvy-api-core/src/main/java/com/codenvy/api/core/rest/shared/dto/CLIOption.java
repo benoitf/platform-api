@@ -26,14 +26,12 @@ import java.util.List;
 /**
  * Describes CLI option.
  *
- * @author Eugene Voevodin
- * @see com.codenvy.api.core.rest.annotations.Description
  * @see com.codenvy.api.core.rest.annotations.Required
  * @see com.codenvy.api.core.rest.annotations.Valid
  * @see com.codenvy.api.core.rest.shared.JAXRSParameterType
  */
 @DTO
-public interface CLIOption {
+public interface CLIOption extends CLIParameter {
 
     String getValue();
 
@@ -52,42 +50,4 @@ public interface CLIOption {
     void setPair(boolean isPair);
 
     CLIOption withPair(boolean isPair);
-
-    ParameterType getType();
-
-    void setType(ParameterType type);
-
-    CLIOption withType(ParameterType type);
-
-    String getDescription();
-
-    void setDescription(String description);
-
-    CLIOption withDescription(String description);
-
-    List<String> getValid();
-
-    void setValid(List<String> valid);
-
-    CLIOption withValid(List<String> valid);
-
-    boolean isRequired();
-
-    void setRequired(boolean isRequired);
-
-    CLIOption withRequired(boolean isRequired);
-
-    JAXRSParameterType getRestParameterType();
-
-    void setRestParameterType(JAXRSParameterType parameterType);
-
-    CLIOption withRestParameterType(JAXRSParameterType parameterType);
-
-    String getParameterName();
-
-    void setParameterName(String parameterName);
-
-    CLIOption withParameterName(String parameterName);
-
-
 }
