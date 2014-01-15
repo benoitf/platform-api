@@ -24,12 +24,17 @@ import java.lang.annotation.Target;
 
 /**
  * Command line interface annotation.
- * JSON may be created from class, if class annotated with @CLI (master Yoda).
+ * Any {@link com.codenvy.api.core.rest.Service} mapped with {@link com.codenvy.api.core.rest.annotations.CLI}
+ * can be parsed into {@link com.codenvy.api.core.rest.shared.dto.CLIBase} object.
  *
  * @author Eugene Voevodin
+ * @see com.codenvy.api.core.rest.shared.dto.CLIBase
+ * @see com.codenvy.api.core.rest.shared.dto.CLIArgument
+ * @see com.codenvy.api.core.rest.shared.dto.CLIOption
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CLI {
+    /** CLI command */
     String value() default "";
 }

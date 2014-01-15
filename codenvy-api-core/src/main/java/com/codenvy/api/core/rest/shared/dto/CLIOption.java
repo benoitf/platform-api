@@ -17,15 +17,12 @@
  */
 package com.codenvy.api.core.rest.shared.dto;
 
-import com.codenvy.api.core.rest.shared.JAXRSParameterType;
-import com.codenvy.api.core.rest.shared.ParameterType;
 import com.codenvy.dto.shared.DTO;
-
-import java.util.List;
 
 /**
  * Describes CLI option.
  *
+ * @author Eugene Voevodin
  * @see com.codenvy.api.core.rest.annotations.Required
  * @see com.codenvy.api.core.rest.annotations.Valid
  * @see com.codenvy.api.core.rest.shared.JAXRSParameterType

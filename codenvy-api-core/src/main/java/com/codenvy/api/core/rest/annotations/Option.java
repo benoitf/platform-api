@@ -23,15 +23,24 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Describes CLI option. If any {@link com.codenvy.api.core.rest.Service} is annotated with
+ * {@link com.codenvy.api.core.rest.annotations.CLI} it can have fields and method parameters annotated with
+ * {@link com.codenvy.api.core.rest.annotations.Argument}. Any field or parameter that annotated with
+ * {@link com.codenvy.api.core.rest.annotations.Argument} should be annotated with any JAX-RS parameter annotation, i.e
+ * {@link javax.ws.rs.QueryParam}.
+ *
  * @author Eugene Voevodin
+ * @see com.codenvy.api.core.rest.annotations.Argument
+ * @see com.codenvy.api.core.rest.annotations.CLI
+ * @see com.codenvy.api.core.rest.shared.dto.CLIOption
  */
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Option {
-    /** short option name*/
+    /** short option name */
     String value();
 
-    /** full option name*/
+    /** full option name */
     String fullValue() default "";
 
     /** if option should be like --option=value */

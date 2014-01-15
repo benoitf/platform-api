@@ -62,6 +62,13 @@ public final class CLIValidator {
         throw new IllegalAccessException();
     }
 
+    /**
+     * Checks Service class validation.
+     *
+     * @param clazz
+     *         {@link com.codenvy.api.core.rest.Service} class that will be validated
+     * @return {@code true} if given {@link com.codenvy.api.core.rest.Service} class is valid, if not than {@code false}
+     */
     public static boolean isValid(Class<? extends Service> clazz) {
         try {
             validate(clazz);
@@ -71,6 +78,14 @@ public final class CLIValidator {
         }
     }
 
+    /**
+     * Validates {@link com.codenvy.api.core.rest.Service} class.
+     *
+     * @param clazz
+     *         given {@link com.codenvy.api.core.rest.Service} class that will be validated
+     * @throws ApiException
+     *         when given {@link com.codenvy.api.core.rest.Service} class is not valid
+     */
     public static void validate(Class<? extends Service> clazz) throws ApiException {
         if (clazz == null) {
             throw new IllegalArgumentException("Given class should not be a null");

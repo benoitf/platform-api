@@ -56,9 +56,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * TODO it is not done yet
+ * Parser for classes mapped with {@link com.codenvy.api.core.rest.annotations.CLI}
  *
  * @author Eugene Voevodin
+ * @see com.codenvy.api.core.rest.annotations.CLI
+ * @see com.codenvy.api.core.rest.CLIValidator
  */
 public final class CLIParser {
 
@@ -103,6 +105,14 @@ public final class CLIParser {
         throw new IllegalAccessException();
     }
 
+    /**
+     * Parses any {@link com.codenvy.api.core.rest.Service} class mapped with {@link com.codenvy.api.core.rest.annotations.CLI} into
+     * {@link com.codenvy.api.core.rest.shared.dto.CLIBase} object. Before parsing class will be validated.
+     *
+     * @param clazz {@link com.codenvy.api.core.rest.Service} that will be parsed
+     * @return parsed {@link com.codenvy.api.core.rest.shared.dto.CLIBase} instance
+     * @throws ApiException when it is not possible to validate given class
+     */
     public static CLIBase parse(Class<? extends Service> clazz) throws ApiException {
         CLIValidator.validate(clazz);
         CLIBase cliBase = DtoFactory.getInstance().createDto(CLIBase.class);
@@ -136,7 +146,7 @@ public final class CLIParser {
         return cliBase;
     }
 
-    public static CLIArgument createCLIArgument(Annotation[] annotations, Class<?> type) {
+    private static CLIArgument createCLIArgument(Annotation[] annotations, Class<?> type) {
         CLIArgument cliArgument = DtoFactory.getInstance().createDto(CLIArgument.class);
         Argument argument = ClassUtil.getAnnotationIfPresent(annotations, Argument.class);
         cliArgument.setPosition(argument.value());
