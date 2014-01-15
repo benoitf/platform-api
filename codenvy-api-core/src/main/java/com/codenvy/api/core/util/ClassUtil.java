@@ -96,14 +96,14 @@ public final class ClassUtil {
     }
 
     public static List<Method> getMethods(Class<?> clazz, AnnotationsFilter filter) {
-        List<Method> methods = new ArrayList<>();
+        List<Method> filteredMethods = new ArrayList<>();
         for (Method method : clazz.getMethods()) {
             Set<Annotation> allMethodAnnotations = getAllMethodAnnotations(method);
             if (filter.accept(allMethodAnnotations.toArray(new Annotation[allMethodAnnotations.size()]))) {
-                methods.add(method);
+                filteredMethods.add(method);
             }
         }
-        return methods;
+        return filteredMethods;
     }
 
     public static Set<Annotation> getAllMethodAnnotations(Method method) {
@@ -116,7 +116,9 @@ public final class ClassUtil {
                 inherited = c.getMethod(method.getName(), method.getParameterTypes());
             } catch (NoSuchMethodException ignored) {
             }
-            annotations.addAll(Arrays.asList(inherited.getAnnotations()));
+            if (inherited != null) {
+                annotations.addAll(Arrays.asList(inherited.getAnnotations()));
+            }
         }
         return annotations;
     }

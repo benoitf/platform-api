@@ -106,6 +106,15 @@ public final class CLIParser {
     public static CLIBase parse(Class<? extends Service> clazz) throws ApiException {
         CLIValidator.validate(clazz);
         CLIBase cliBase = DtoFactory.getInstance().createDto(CLIBase.class);
+        //cli and path can't be null cause clazz was validated before
+        CLI cli = ClassUtil.getClassAnnotation(clazz, CLI.class);
+        Path path = ClassUtil.getClassAnnotation(clazz, Path.class);
+        Description description = ClassUtil.getClassAnnotation(clazz, Description.class);
+        cliBase.setCommand(cli.value());
+        cliBase.setPath(path.value());
+        if (description != null) {
+            cliBase.setDescription(description.value());
+        }
         //CLI class arguments
         List<CLIArgument> arguments = new ArrayList<>();
         for (Field field : ClassUtil.getFields(clazz, ARGUMENTS_FILTER)) {
@@ -127,7 +136,7 @@ public final class CLIParser {
         return cliBase;
     }
 
-    private static CLIArgument createCLIArgument(Annotation[] annotations, Class<?> type) {
+    public static CLIArgument createCLIArgument(Annotation[] annotations, Class<?> type) {
         CLIArgument cliArgument = DtoFactory.getInstance().createDto(CLIArgument.class);
         Argument argument = ClassUtil.getAnnotationIfPresent(annotations, Argument.class);
         cliArgument.setPosition(argument.value());
@@ -158,6 +167,7 @@ public final class CLIParser {
             cliCommand.setProduces(Arrays.asList(produces.value()));
         }
         cliCommand.setCommand(cli.value());
+        cliCommand.setPath(path.value());
         String httpMethod = null;
         if (ClassUtil.getMethodAnnotation(method, GET.class) != null) {
             httpMethod = "GET";
@@ -194,8 +204,8 @@ public final class CLIParser {
         //can not be null in this case, cause service was validated before
         Annotation restParameter = getJAXRSParamAnnotationIfPresent(annotations);
         cliParameter.setRequired(required != null);
-        cliParameter.setRestParameterType(getJAXRSParameterType(restParameter));
-        cliParameter.setParameterValue(getJAXRSParameterAnnotationValue(restParameter));
+        cliParameter.setParameterType(getJAXRSParameterType(restParameter));
+        cliParameter.setParameterName(getJAXRSParameterAnnotationValue(restParameter));
         if (description != null) {
             cliParameter.setDescription(description.value());
         }

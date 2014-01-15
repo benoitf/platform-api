@@ -105,6 +105,7 @@ public final class CLIValidator {
     private static void validateEachCLIMethodArguments(Class<?> clazz) throws ApiException {
         final Set<Integer> cliArgumentPositions = new HashSet<>();
         for (Method method : clazz.getMethods()) {
+            cliArgumentPositions.clear();
             if (ClassUtil.getMethodAnnotation(method, CLI.class) != null) {
                 for (Annotation[] parameterAnnotations : method.getParameterAnnotations()) {
                     checkItIsNoConflictsBetweenOptionsAndArguments(parameterAnnotations);

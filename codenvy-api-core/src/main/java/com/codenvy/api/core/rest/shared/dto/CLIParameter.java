@@ -52,15 +52,15 @@ public interface CLIParameter {
 
     CLIParameter withRequired(boolean isRequired);
 
-    JAXRSParameterType getRestParameterType();
+    JAXRSParameterType getParameterType();
 
-    void setRestParameterType(JAXRSParameterType parameterType);
+    void setParameterType(JAXRSParameterType parameterType);
 
-    CLIParameter withRestParameterType(JAXRSParameterType parameterType);
+    CLIParameter withParameterType(JAXRSParameterType parameterType);
 
-    String getParameterValue();
+    String getParameterName();
 
-    void setParameterValue(String parameterValue);
+    void setParameterName(String parameterName);
 
-    CLIParameter withParameterValue(String parameterValue);
+    CLIParameter withParameterName(String parameterName);
 }
