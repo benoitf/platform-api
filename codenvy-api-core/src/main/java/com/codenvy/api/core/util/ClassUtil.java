@@ -31,7 +31,7 @@ import java.util.Set;
 import java.util.SortedSet;
 
 /**
- * Help to do some external operations {@link java.lang.Class}
+ * Help to do some external operations with {@link java.lang.Class}
  *
  * @author Eugene Voevodin
  */
@@ -191,7 +191,7 @@ public final class ClassUtil {
     }
 
     /**
-     * Accepts annotations
+     * Used to filter annotations
      */
     public static interface AnnotationsFilter {
         boolean accept(Annotation[] annotations);
