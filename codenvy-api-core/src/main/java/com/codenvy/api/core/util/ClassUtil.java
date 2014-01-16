@@ -31,6 +31,8 @@ import java.util.Set;
 import java.util.SortedSet;
 
 /**
+ * Help to do some external operations {@link java.lang.Class}
+ *
  * @author Eugene Voevodin
  */
 public final class ClassUtil {
@@ -39,6 +41,9 @@ public final class ClassUtil {
         throw new IllegalAccessException();
     }
 
+    /**
+     * Converts any given {@link java.lang.Class} to {@link com.codenvy.api.core.rest.shared.ParameterType}
+     */
     public static ParameterType getParameterType(Class<?> clazz) {
         if (clazz == String.class) {
             return ParameterType.String;
@@ -57,6 +62,15 @@ public final class ClassUtil {
         return ParameterType.Object;
     }
 
+    /**
+     * Searches for annotation
+     *
+     * @param sourceAnnotation
+     *         where make search
+     * @param target
+     *         annotation to search
+     * @return found {@link java.lang.annotation.Annotation} or {@code null} if it is not exists in sources
+     */
     public static <T extends Annotation> T getAnnotationIfPresent(Annotation[] sourceAnnotation, Class<T> target) {
         for (Annotation source : sourceAnnotation) {
             if (source.annotationType().equals(target)) {
@@ -66,6 +80,15 @@ public final class ClassUtil {
         return null;
     }
 
+    /**
+     * Searches for the class annotation in inheritance tree from given class to Object
+     *
+     * @param clazz
+     *         start point to search annotation
+     * @param annotationClass
+     *         annotation to search
+     * @return {@link java.lang.annotation.Annotation} if found, or {@code null} if not
+     */
     public static <T extends Annotation> T getClassAnnotation(Class<?> clazz, Class<T> annotationClass) {
         T annotation = clazz.getAnnotation(annotationClass);
         if (annotation == null) {
@@ -76,6 +99,15 @@ public final class ClassUtil {
         return annotation;
     }
 
+    /**
+     * Searches for the method annotation in inheritance tree while annotation will not be found or method present
+     *
+     * @param method
+     *         start method to search annotation
+     * @param annotationClass
+     *         annotation to search
+     * @return {@link java.lang.annotation.Annotation} if found, or {@code null} if not
+     */
     public static <T extends Annotation> T getMethodAnnotation(Method method, Class<T> annotationClass) {
         T annotation = method.getAnnotation(annotationClass);
         if (annotation == null) {
@@ -95,6 +127,15 @@ public final class ClassUtil {
         return annotation;
     }
 
+    /**
+     * Searches for all class methods that accepted with given filter
+     *
+     * @param clazz
+     *         where to search
+     * @param filter
+     *         accepts annotations
+     * @return list of filtered methods
+     */
     public static List<Method> getMethods(Class<?> clazz, AnnotationsFilter filter) {
         List<Method> filteredMethods = new ArrayList<>();
         for (Method method : clazz.getMethods()) {
@@ -106,6 +147,13 @@ public final class ClassUtil {
         return filteredMethods;
     }
 
+    /**
+     * Searches for all method annotations in inheritance tree while method is present
+     *
+     * @param method
+     *         start point to search
+     * @return set of found annotations
+     */
     public static Set<Annotation> getAllMethodAnnotations(Method method) {
         Set<Annotation> annotations = new HashSet<>();
         for (Class<?> c = method.getDeclaringClass();
@@ -123,6 +171,15 @@ public final class ClassUtil {
         return annotations;
     }
 
+    /**
+     * Searches for all fields that accepted with given filter
+     *
+     * @param clazz
+     *         where to search
+     * @param filter
+     *         accepts annotations
+     * @return
+     */
     public static List<Field> getFields(Class<?> clazz, AnnotationsFilter filter) {
         List<Field> filteredFields = new ArrayList<>();
         for (Field field : clazz.getFields()) {
@@ -133,6 +190,9 @@ public final class ClassUtil {
         return filteredFields;
     }
 
+    /**
+     * Accepts annotations
+     */
     public static interface AnnotationsFilter {
         boolean accept(Annotation[] annotations);
     }

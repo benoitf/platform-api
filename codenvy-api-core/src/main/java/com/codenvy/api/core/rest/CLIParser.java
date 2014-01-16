@@ -109,9 +109,11 @@ public final class CLIParser {
      * Parses any {@link com.codenvy.api.core.rest.Service} class mapped with {@link com.codenvy.api.core.rest.annotations.CLI} into
      * {@link com.codenvy.api.core.rest.shared.dto.CLIBase} object. Before parsing class will be validated.
      *
-     * @param clazz {@link com.codenvy.api.core.rest.Service} that will be parsed
+     * @param clazz
+     *         {@link com.codenvy.api.core.rest.Service} that will be parsed
      * @return parsed {@link com.codenvy.api.core.rest.shared.dto.CLIBase} instance
-     * @throws ApiException when it is not possible to validate given class
+     * @throws ApiException
+     *         when it is not possible to validate given class
      */
     public static CLIBase parse(Class<? extends Service> clazz) throws ApiException {
         CLIValidator.validate(clazz);
@@ -173,7 +175,8 @@ public final class CLIParser {
         Produces produces = ClassUtil.getMethodAnnotation(method, Produces.class);
         if (consumes != null) {
             cliCommand.setConsumes(Arrays.asList(consumes.value()));
-        } else if (produces != null) {
+        }
+        if (produces != null) {
             cliCommand.setProduces(Arrays.asList(produces.value()));
         }
         cliCommand.setCommand(cli.value());
