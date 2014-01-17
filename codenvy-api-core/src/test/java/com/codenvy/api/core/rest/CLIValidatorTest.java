@@ -79,6 +79,11 @@ public class CLIValidatorTest {
         Assert.assertTrue(CLIValidator.isValid(HelpService.class));
     }
 
+    //TODO add validating of same options
+    @Test(expectedExceptions = ApiException.class)
+    public void testServiceWithOptionsThatHasSameValue() throws ApiException {
+        CLIValidator.validate(TestService5.class);
+    }
 
     @Path("test")
     @CLI("test_command")
@@ -157,6 +162,20 @@ public class CLIValidatorTest {
         @Option(value = "-f", fullValue = "--fake")
         public String fake;
     }
+
+    @Path("test")
+    @CLI("test_command")
+    class TestService5 extends Service {
+
+        @Option(value = "-f", fullValue = "--fake")
+        @QueryParam("fake")
+        public String fake;
+
+        @QueryParam("otherFake")
+        @Option(value = "-F", fullValue = "--fake")
+        public String otherFake;
+    }
+
 
     @CLI("command")
     abstract class AbstractHelpService extends Service {
