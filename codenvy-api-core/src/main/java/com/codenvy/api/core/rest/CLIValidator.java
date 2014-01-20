@@ -96,16 +96,18 @@ public final class CLIValidator {
         /*METHODS*/
         checkEachCLIMethodHasItOwnCommand(clazz);
         checkEachCLIMethodIsAnnotatedWithPath(clazz);
-        validateEachCLIMethodArguments(clazz);
+        validateEachCLIMethodParameters(clazz);
         /*FIELDS*/
         validateEachCLIField(clazz);
     }
 
     private static void validateEachCLIField(Class<? extends Service> clazz) throws ApiException {
         final Set<Integer> argumentPositions = new HashSet<>();
+        final Set<Option> optionsMemory = new HashSet<>();
         for (Field field : clazz.getFields()) {
             checkItIsNoConflictsBetweenOptionsAndArguments(field.getAnnotations());
             checkArgumentPosition(field.getAnnotations(), argumentPositions);
+            checkNoSameOptionsPresent(field.getAnnotations(), optionsMemory);
         }
     }
 
@@ -117,16 +119,30 @@ public final class CLIValidator {
         }
     }
 
-    private static void validateEachCLIMethodArguments(Class<?> clazz) throws ApiException {
+    private static void validateEachCLIMethodParameters(Class<?> clazz) throws ApiException {
         final Set<Integer> cliArgumentPositions = new HashSet<>();
+        final Set<Option> cliOptionsMemory = new HashSet<>();
         for (Method method : clazz.getMethods()) {
             cliArgumentPositions.clear();
             if (ClassUtil.getMethodAnnotation(method, CLI.class) != null) {
                 for (Annotation[] parameterAnnotations : method.getParameterAnnotations()) {
                     checkItIsNoConflictsBetweenOptionsAndArguments(parameterAnnotations);
                     checkArgumentPosition(parameterAnnotations, cliArgumentPositions);
+                    checkNoSameOptionsPresent(parameterAnnotations, cliOptionsMemory);
                 }
             }
+        }
+    }
+
+    private static void checkNoSameOptionsPresent(Annotation[] source, Set<Option> memory) throws ApiException {
+        Option current = ClassUtil.getAnnotationIfPresent(source, Option.class);
+        if (current != null) {
+            for (Option option : memory) {
+                if (option.value().equals(current.value()) || option.fullValue().equals(current.fullValue())) {
+                    throw new ApiException(String.format("Same option value present at %s and %s", current, option));
+                }
+            }
+            memory.add(current);
         }
     }
 
@@ -147,9 +163,7 @@ public final class CLIValidator {
         CLI current;
         for (Method method : clazz.getMethods()) {
             if ((current = ClassUtil.getMethodAnnotation(method, CLI.class)) != null) {
-                if (!commands.contains(current.value())) {
-                    commands.add(current.value());
-                } else {
+                if (!commands.add(current.value())) {
                     throw new ApiException(String.format("Command %s already exists", current.value()));
                 }
             }

@@ -79,7 +79,6 @@ public class CLIValidatorTest {
         Assert.assertTrue(CLIValidator.isValid(HelpService.class));
     }
 
-    //TODO add validating of same options
     @Test(expectedExceptions = ApiException.class)
     public void testServiceWithOptionsThatHasSameValue() throws ApiException {
         CLIValidator.validate(TestService5.class);
