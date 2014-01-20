@@ -52,27 +52,26 @@ import java.util.Set;
  */
 public class CLIParserTest {
 
-    private final CLIBase cliInherited;
+    private final CLIBase cliBase;
 
     public CLIParserTest() throws ApiException {
-        cliInherited = CLIParser.parse(ExtendedGunsService.class);
+        cliBase = CLIParser.parse(ExtendedGunsService.class);
     }
-
 
     @Test
     public void testClassCommand() {
-        Assert.assertEquals(cliInherited.getCommand(), "create");
-        Assert.assertEquals(cliInherited.getDescription(), "Service for creating guns");
-        Assert.assertEquals(cliInherited.getPath(), "create_gun");
+        Assert.assertEquals(cliBase.getCommand(), "create");
+        Assert.assertEquals(cliBase.getDescription(), "Service for creating guns");
+        Assert.assertEquals(cliBase.getPath(), "create_gun");
     }
 
     @Test
     public void testClassArguments() throws ApiException, NoSuchMethodException {
-        Assert.assertEquals(cliInherited.getArguments().size(), 1);
+        Assert.assertEquals(cliBase.getArguments().size(), 1);
         Assert.assertEquals(toSet(createDto(CLIArgument.class).withPosition(1)
                                           .withParameterType(JAXRSParameterType.PATH)
                                           .withParameterName("pistol").withType(ParameterType.String)
-                                          .withValid(Arrays.asList("usp", "glock"))), toSet(cliInherited.getArguments()));
+                                          .withValid(Arrays.asList("usp", "glock"))), toSet(cliBase.getArguments()));
     }
 
     @Test
@@ -82,13 +81,13 @@ public class CLIParserTest {
                                           .withType(ParameterType.Boolean),
                                   createDto(CLIOption.class).withValue("-C").withFullValue("").withParameterType(JAXRSParameterType.QUERY)
                                           .withParameterName("gun_color").withType(ParameterType.String)),
-                            toSet(cliInherited.getOptions()));
+                            toSet(cliBase.getOptions()));
     }
 
     @Test
     public void testClassCommands() {
-        Assert.assertEquals(cliInherited.getCommands().size(), 1);
-        CLICommand current = cliInherited.getCommands().get(0);
+        Assert.assertEquals(cliBase.getCommands().size(), 1);
+        CLICommand current = cliBase.getCommands().get(0);
         CLIArgument firstArgument =
                 (CLIArgument)createDto(CLIArgument.class).withPosition(1).withType(ParameterType.String).withParameterType(
                         JAXRSParameterType.QUERY)

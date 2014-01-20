@@ -64,7 +64,6 @@ import java.util.Set;
  */
 public final class CLIParser {
 
-    private static final Set<Class<? extends Annotation>> JAX_RS_PARAM_ANNOTATIONS;
 
     private static final ClassUtil.AnnotationsFilter ARGUMENTS_FILTER;
 
@@ -73,14 +72,6 @@ public final class CLIParser {
     private static final ClassUtil.AnnotationsFilter CLI_FILTER;
 
     static {
-        List<Class<? extends Annotation>> tmpAnnotations = new ArrayList<>(7);
-        tmpAnnotations.add(QueryParam.class);
-        tmpAnnotations.add(HeaderParam.class);
-        tmpAnnotations.add(FormParam.class);
-        tmpAnnotations.add(PathParam.class);
-        tmpAnnotations.add(CookieParam.class);
-        tmpAnnotations.add(MatrixParam.class);
-        JAX_RS_PARAM_ANNOTATIONS = new HashSet<>(tmpAnnotations);
         ARGUMENTS_FILTER = new ClassUtil.AnnotationsFilter() {
             @Override
             public boolean accept(Annotation[] annotations) {
@@ -229,7 +220,7 @@ public final class CLIParser {
 
     private static Annotation getJAXRSParamAnnotationIfPresent(Annotation[] source) {
         Annotation current;
-        for (Class target : JAX_RS_PARAM_ANNOTATIONS) {
+        for (Class target : CLIValidator.JAX_RS_PARAM_ANNOTATIONS) {
             if ((current = ClassUtil.getAnnotationIfPresent(source, target)) != null) {
                 return current;
             }

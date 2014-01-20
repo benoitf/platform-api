@@ -34,6 +34,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,7 +46,7 @@ import java.util.Set;
  */
 public final class CLIValidator {
 
-    private static final Set<Class<? extends Annotation>> JAX_RS_PARAM_ANNOTATIONS;
+    public static final Set<Class<? extends Annotation>> JAX_RS_PARAM_ANNOTATIONS;
 
     static {
         List<Class<? extends Annotation>> tmpAnnotations = new ArrayList<>(7);
@@ -55,7 +56,7 @@ public final class CLIValidator {
         tmpAnnotations.add(PathParam.class);
         tmpAnnotations.add(CookieParam.class);
         tmpAnnotations.add(MatrixParam.class);
-        JAX_RS_PARAM_ANNOTATIONS = new HashSet<>(tmpAnnotations);
+        JAX_RS_PARAM_ANNOTATIONS = Collections.unmodifiableSet(new HashSet<>(tmpAnnotations));
     }
 
     private CLIValidator() throws IllegalAccessException {
@@ -106,12 +107,12 @@ public final class CLIValidator {
         final Set<Option> optionsMemory = new HashSet<>();
         for (Field field : clazz.getFields()) {
             checkItIsNoConflictsBetweenOptionsAndArguments(field.getAnnotations());
-            checkArgumentPosition(field.getAnnotations(), argumentPositions);
+            checkNoSameArgumentPositionsPresent(field.getAnnotations(), argumentPositions);
             checkNoSameOptionsPresent(field.getAnnotations(), optionsMemory);
         }
     }
 
-    private static void checkArgumentPosition(Annotation[] annotations, Set<Integer> positionsMemory) throws ApiException {
+    private static void checkNoSameArgumentPositionsPresent(Annotation[] annotations, Set<Integer> positionsMemory) throws ApiException {
         Argument cliArgument = ClassUtil.getAnnotationIfPresent(annotations, Argument.class);
         if (cliArgument != null && cliArgument.value() > 0 && !positionsMemory.add(cliArgument.value())) {
             throw new ApiException(
@@ -127,7 +128,7 @@ public final class CLIValidator {
             if (ClassUtil.getMethodAnnotation(method, CLI.class) != null) {
                 for (Annotation[] parameterAnnotations : method.getParameterAnnotations()) {
                     checkItIsNoConflictsBetweenOptionsAndArguments(parameterAnnotations);
-                    checkArgumentPosition(parameterAnnotations, cliArgumentPositions);
+                    checkNoSameArgumentPositionsPresent(parameterAnnotations, cliArgumentPositions);
                     checkNoSameOptionsPresent(parameterAnnotations, cliOptionsMemory);
                 }
             }
@@ -159,11 +160,11 @@ public final class CLIValidator {
     }
 
     private static void checkEachCLIMethodHasItOwnCommand(Class<?> clazz) throws ApiException {
-        Set<String> commands = new HashSet<>();
+        final Set<String> commandsMemory = new HashSet<>();
         CLI current;
         for (Method method : clazz.getMethods()) {
             if ((current = ClassUtil.getMethodAnnotation(method, CLI.class)) != null) {
-                if (!commands.add(current.value())) {
+                if (!commandsMemory.add(current.value())) {
                     throw new ApiException(String.format("Command %s already exists", current.value()));
                 }
             }
